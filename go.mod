@@ -1,4 +1,4 @@
-module home
+module crypthash
 
 go 1.19
 
