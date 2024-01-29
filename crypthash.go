@@ -28,7 +28,7 @@ var (
 	randomizer     = rand.New(rand.NewSource(time.Now().UnixNano()))
 )
 
-func makeAuthServer(db *sql.DB, addr string, port string, sizer int) (*http.Server, chan *IpCoder) {
+func MakeAuthServer(db *sql.DB, addr string, port string, sizer int) (*http.Server, chan *IpCoder) {
 	messageSize = sizer
 	router := mux.NewRouter()
 	router.HandleFunc("/Auth", authHandler)
