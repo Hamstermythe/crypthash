@@ -24,13 +24,13 @@ type (
 
 var (
 	messageSize    = 0
-	codexTransfert chan *IpCoder
+	CodexTransfert chan *IpCoder
 	randomizer     = rand.New(rand.NewSource(time.Now().UnixNano()))
 )
 
 func MakeAuthServer(db *sql.DB, addr string, port string, sizer int) (*http.Server, chan *IpCoder) {
 	newChan := make(chan *IpCoder)
-	codexTransfert = newChan
+	CodexTransfert = newChan
 	messageSize = sizer
 	router := mux.NewRouter()
 	router.HandleFunc("/Auth", authHandler)
@@ -44,7 +44,7 @@ func MakeAuthServer(db *sql.DB, addr string, port string, sizer int) (*http.Serv
 func authHandler(w http.ResponseWriter, r *http.Request) {
 	clientIp := r.RemoteAddr
 	codex := KeyGen(messageSize)
-	codexTransfert <- &IpCoder{Ip: clientIp, Codex: codex}
+	CodexTransfert <- &IpCoder{Ip: clientIp, Codex: codex}
 	toClient, err := json.Marshal(codex)
 	if err != nil {
 		fmt.Println(err)
