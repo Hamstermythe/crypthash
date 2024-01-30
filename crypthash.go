@@ -24,13 +24,11 @@ type (
 
 var (
 	messageSize    = 0
-	codexTransfert chan *IpCoder
+	codexTransfert = make(chan *IpCoder)
 	randomizer     = rand.New(rand.NewSource(time.Now().UnixNano()))
 )
 
-func MakeAuthServer(db *sql.DB, addr string, port string, sizer int, chanIpCodexObtainer chan *IpCoder) *http.Server {
-	// newChan := make(chan *IpCoder)
-	codexTransfert = chanIpCodexObtainer
+func MakeAuthServer(db *sql.DB, addr string, port string, sizer int) *http.Server {
 	messageSize = sizer
 	router := mux.NewRouter()
 	router.HandleFunc("/Auth", authHandler)
@@ -50,6 +48,10 @@ func authHandler(w http.ResponseWriter, r *http.Request) {
 		fmt.Println(err)
 	}
 	w.Write(toClient)
+}
+
+func SurveNewIpCodex() *IpCoder {
+	return <-codexTransfert
 }
 
 // retourne un encodage pour un message de taille length
