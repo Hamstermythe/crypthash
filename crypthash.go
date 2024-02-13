@@ -18,7 +18,7 @@ type (
 	}
 	IpCoder struct {
 		Ip string
-		*Codex
+		Codex
 	}
 )
 
@@ -55,9 +55,9 @@ func SurveNewIpCodex() *IpCoder {
 }
 
 // retourne un encodage pour un message de taille length
-func KeyGen(length int) *Codex {
-	if length < 115 {
-		return nil
+func KeyGen(length int) Codex {
+	if length < 20 {
+		return Codex{}
 	}
 	var key []int
 	for i := 0; i < length; i++ {
@@ -78,7 +78,7 @@ func KeyGen(length int) *Codex {
 		hasher = append(hasher, baseOrder[rand])
 		baseOrder = append(baseOrder[:rand], baseOrder[rand+1:]...)
 	}
-	return &Codex{Key: key, Hasher: hasher}
+	return Codex{Key: key, Hasher: hasher}
 }
 
 func Encrypt(message []byte, codex Codex) []byte {
