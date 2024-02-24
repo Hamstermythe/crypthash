@@ -55,7 +55,7 @@ func MakeAuthServer(db *sql.DB, addr string, port string, sizer int) *http.Serve
 
 func authHandler(w http.ResponseWriter, r *http.Request) {
 	// clientPort := r.Host
-	clientIp := r.Host // r.RemoteAddr
+	clientIp := r.RemoteAddr
 	codex := KeyGen(messageSize)
 	codexTransfert <- &IpCoder{Ip: clientIp, Codex: codex}
 	toClient, err := json.Marshal(codex)
