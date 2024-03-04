@@ -2,13 +2,13 @@ package crypthash
 
 import (
 	"crypto/tls"
-	"database/sql"
 	"encoding/json"
 	"fmt"
 	"math/rand"
 	"net/http"
 	"time"
 
+	"github.com/google/uuid"
 	"github.com/gorilla/mux"
 )
 
@@ -16,6 +16,7 @@ type (
 	Codex struct {
 		Key    []int
 		Hasher []int
+		UUID   string
 	}
 	IpCoder struct {
 		Ip string
@@ -29,7 +30,7 @@ var (
 	randomizer     = rand.New(rand.NewSource(time.Now().UnixNano()))
 )
 
-func MakeAuthServer(db *sql.DB, addr string, port string, sizer int) *http.Server {
+func MakeAuthServer(addr string, port string, sizer int) *http.Server {
 	messageSize = sizer
 	router := mux.NewRouter()
 	router.HandleFunc("/Auth", authHandler)
@@ -94,7 +95,8 @@ func KeyGen(length int) Codex {
 		hasher = append(hasher, baseOrder[rand])
 		baseOrder = append(baseOrder[:rand], baseOrder[rand+1:]...)
 	}
-	return Codex{Key: key, Hasher: hasher}
+	uuid := uuid.New()
+	return Codex{Key: key, Hasher: hasher, UUID: uuid.String()[:8]}
 }
 
 func Encrypt(message []byte, codex Codex) []byte {
