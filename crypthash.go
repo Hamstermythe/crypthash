@@ -19,7 +19,8 @@ type (
 		UUID   string
 	}
 	IpCoder struct {
-		Ip string
+		Ip       string
+		LastTick time.Time
 		Codex
 	}
 )
